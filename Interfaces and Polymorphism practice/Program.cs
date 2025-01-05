@@ -2,6 +2,45 @@
 {
     internal class Program
     {
+        public interface IPaymentProcesser
+        {
+            void ProcessPayment(decimal amount);
+            
+        }
+
+        public class CreditCardProcessor : IPaymentProcesser
+        {
+            public void ProcessPayment(decimal amount)
+            {
+                Console.WriteLine($"Processing credit card payment of £{amount}. ");
+                //Implement credit card payment logic
+            }
+            
+        }
+
+        public class  PayPalProcessor : IPaymentProcesser 
+        {
+            public void ProcessPayment(decimal amount)
+            {
+                Console.WriteLine($"Proccessing the paypal payment of £{amount}");
+                //Implement paypal payment logic
+            }
+           
+        }
+
+        public class PaymentService
+        {
+            private readonly IPaymentProcesser _paymentProcesser;
+
+            public PaymentService(IPaymentProcesser processor)
+            {
+                _paymentProcesser = processor;
+            }
+            public void ProcessOrderPayment(decimal amount)
+            {
+                _paymentProcesser.ProcessPayment(amount);
+            }
+        }
         public interface IAnimal
         {
             void MakeSound();
@@ -37,9 +76,14 @@
         
         static void Main(string[] args)
         {
-            Dog dog = new Dog();
-            dog.MakeSound();
-            dog.Eat("Treat");
+            IPaymentProcesser creditCardProcessor = new CreditCardProcessor();
+            PaymentService creditCardPaymentService = new PaymentService(creditCardProcessor);
+            creditCardPaymentService.ProcessOrderPayment(100);
+
+            CreditCardProcessor newCreditCardProcessor = new CreditCardProcessor();
+            newCreditCardProcessor.ProcessPayment(100);
+
+
         }
     }
 }
